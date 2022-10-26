@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    body{
+      margin:0;
+    }
+    #container{
+      width: 100vw;
+      height: 100vh;
+    }
+    .slide{
+      width: 100%;
+      height: 75%;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      display: block;
+      position:absolute;
+      transition: 2s;
+    }
+    #prev{
+      position: absolute;
+      bottom: -100px;
+      left: 10px;
+    }
+    #next{
+      position: absolute;
+      bottom: -100px;
+      right: 10px;
+    }
+    #numContainer{
+      position: absolute;
+      width: 60%;
+      left: 20%;
+      text-align:center;
+      bottom: -100px;
+    }
+    .active{
+      background:gold;
+    }
+    .playButton {
+      background-color: #dadada;
+      color: #000000;
+      padding: 10px;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      margin:10px
+    }
+    .stopButton {
+      background-color: #545454;
+      color: #ffffff;
+      padding: 10px;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      margin:10px
+    }
+    .medium-btn {
+      width: 70px;
+      height: 30px;
+    }
+    .block {
+      display: block;
+      width: 100%;
+      border: none;
+      background-color: #a00000;
+      padding: 14px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .accordion {
+    	background-color: #a00000;
+    	color: #000000;
+    	cursor: pointer;
+    	padding: 18px;
+    	width: 100%;
+    	border: none;
+    	text-align: center;
+    	outline: none;
+    	font-size: 15px;
+    	transition: 0.4s;
+	  }
+
+	  .active, .accordion:hover {
+	    background-color: #a05a5a;
+	  }
+
+	  .panel {
+ 	    padding: 0 18px;
+	    background-color: #00f2ff;
+      color: #000000;
+      text-align: center;
+	    max-height: 0;
+	    overflow: hidden;
+	    transition: max-height 0.2s ease-out;
+	  }
+  </style>
+  <script>
+    var allImages = [];
+    var allPrompts = [];
+    var currentSlide = 0; 
+
+    function start(){
+      
+      allImages = ['images/photograph-of-a-man-full-body-perfectly-detailed-588554952.png',
+          'images/photograph-of-a-man-full-body-perfectly-detailed-693729408-alt1.png',
+          'images/photograph-of-a-man-full-body-perfectly-detailed-693729408-alt2.png',
+          'images/photograph-of-a-man-full-body-perfectly-detailed-693729408-alt3.png',
+          'images/photograph-of-a-man-full-body-perfectly-detailed-693729408.png']
+      
+      allPrompts = ['Play the music to move the images. Then stop the music, and the image you land on will be of your soulmate.',
+          'Play the music to move the images. Then stop the music, and the image you land on will be of your soulmate.',
+          'Play the music to move the images. Then stop the music, and the image you land on will be of your soulmate.',
+          'Play the music to move the images. Then stop the music, and the image you land on will be of your soulmate.',
+          'Play the music to move the images. Then stop the music, and the image you land on will be of your soulmate.']
+      
+      var markup = "";
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<div class='slide' style='background-image:url(" + allImages[i] + ")'></div>"
+      }
+      document.getElementById("container").innerHTML = markup;
+
+      markup = "";
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<button onclick='numClicked(" + i + ")' class='num'>" + (i + 1) + "</button>"
+      }
+      document.getElementById("numContainer").innerHTML = markup;
+
+      goToCurrentSlide();
+    }
+
+    var goPrev = function(){
+      currentSlide = currentSlide - 1
+      if(currentSlide < 0){
+        currentSlide = allImages.length;
+      }
+      goToCurrentSlide();
+    }
+
+    var goNext = function(){
+      currentSlide = currentSlide + 1;
+      if(currentSlide >= allImages.length){
+        currentSlide = 0;
+      }
+      goToCurrentSlide();
+    }
+
+    var numClicked = function(n){
+      currentSlide = n;
+      goToCurrentSlide(); 
+    }
+
+    var goToCurrentSlide = function(){
+      var allImgObjs = document.getElementsByClassName("slide")
+      var allNumObjs = document.getElementsByClassName("num")
+      var allPromptObjs = document.getElementsByClassName("prompt")
+      
+      // Update the prompt
+      var markup = "<h3>" + allPrompts[currentSlide] + "</h3>"
+      document.getElementById("promptContainer").innerHTML = markup;
+
+      for(var i = 0; i < allImgObjs.length; i++){
+        if(i==currentSlide){
+          allImgObjs[i].style.opacity = "1";
+          allNumObjs[i].className = "num active"; 
+        }
+        else{
+          allImgObjs[i].style.opacity = "0";
+          allNumObjs[i].className = "num"; 
+        }
+      }
+    }
+
+    function play() {
+        audio = new Audio('music/Spiraling Out Of Control (EP Version).mp3');
+        audio.play();
+        intervalId = window.setInterval(function(){
+          goNext();
+        }, 500);
+      }
+
+    function stop(){
+        clearInterval(intervalId);
+        audio.pause();
+    }
+
+  </script>
+</head>
+
+<body onload='start()'>
+  <p>Song: "Spiraling Out Of Control" by Digital Garden</p>
+  <h1>Round 2!</h1>
+
+  <div id='promptContainer'>
+    <h1 class='prompt'></h1>
+  </div>
+
+  <button onclick="play()" class="block">Play music</button>
+  <button onclick="stop()" class="block">Stop music</button>
+  <button class="accordion">Click Here!</button>
+  <div class="panel">
+    <ul>Hey check it out, I've changed color. Hehe</ul>
+  </div>
+
+  <div id='container'>
+  </div>
+  <div id='numContainer'>
+  </div>
+  
+  <button onclick='goPrev()' id='prev'> Prev </button>
+  <button onclick='goNext()' id='next'> Next </button>
+
+  <button class="accordion">Did you know?</button>
+  <div class="panel">
+    <ul>Some of these guys are jerks in real life, just be careful</ul>
+  </div>
+
+  <script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+      });
+    }
+  </script>
+
+</body>
+
+</html>
